@@ -18,7 +18,7 @@ def register():
     consul.agent.service.register(
         name="user-service",
         service_id="user-service-1",
-        address="127.0.0.1",
+        address="localhost",
         port=8000,
         tags=["user-service"],
     )
@@ -26,4 +26,4 @@ def register():
 
 if __name__ == "__main__":
     register()
-    uvicorn.run(app, host="localhost", port=8001)
+    uvicorn.run(app, host="localhost", port=8000)
