@@ -4,7 +4,12 @@ FROM python:3.12-slim-bookworm AS base
 WORKDIR /app/api
 
 # Install Poetry
-ENV UV_VERSION=0.16.0
+ENV UV_VERSION=0.6.11
+
+RUN apt-get update && apt-get install -y libpq-dev
+RUN apt-get update && apt-get install -y libpq5
+
+
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir --upgrade uv==${UV_VERSION}
 
@@ -17,11 +22,12 @@ ENV UV_VIRTUALENVS_CREATE=true
 FROM base AS packages
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc g++ libc-dev libffi-dev libgmp-dev libmpfr-dev libmpc-dev
+    && apt-get install -y --no-install-recommends gcc g++ libc-dev libffi-dev libgmp-dev libmpfr-dev libmpc-dev \
+    libpq-dev postgresql-client
 
 # Install Python dependencies
 COPY pyproject.toml uv.lock ./
-RUN uv install --sync --no-cache --no-root
+RUN uv sync
 # production stage
 FROM base AS production
 

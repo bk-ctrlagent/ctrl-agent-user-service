@@ -14,11 +14,11 @@ app = FastAPI()
 app.include_router(user.router, prefix="/user")
 
 def register():
-    consul = Consul(host='localhost', port=8500)
+    consul = Consul(host='consul', port=8500)
     consul.agent.service.register(
         name="user-service",
         service_id="user-service-1",
-        address="localhost",
+        address="user_service",
         port=8000,
         tags=["user-service"],
     )
@@ -26,4 +26,4 @@ def register():
 
 if __name__ == "__main__":
     register()
-    uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
